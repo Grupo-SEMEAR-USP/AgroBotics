@@ -66,7 +66,7 @@ void Utils::followLine (int speed) {
     {
         //going forward with full speed 
         ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-        ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
+        ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
         digitalWrite(_m1, HIGH);
         digitalWrite(_m2, LOW);
         digitalWrite(_m3, HIGH);
