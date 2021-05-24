@@ -3,63 +3,6 @@
 #include "now.h"
 #define CHANNEL 5
 
-// callback when data is sent from Master to Slave
-void Now::OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  char macStr[18];
-  snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.print("Last Packet Sent to: "); Serial.println(macStr);
-  Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
-}
-
-//Função que recebe os dados e o tam da string data
-void Now::OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
-    char macStr[18];
-    _data myData;
-    //Copiamos o Mac Address origem para uma string
-    snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-    //Mostramos o Mac Address que foi a origem da mensagem
-    Serial.print("Received from: "); 
-    Serial.println(macStr);
-    Serial.println("");
-    //Testando os dados
-    memcpy(&myData, incomingData, sizeof(myData));
-    Serial.print("Tempo:");
-    Serial.println(myData.time); 
-
-}
-
-void Now::InitESPNow() {
-  //Se a inicialização foi bem sucedida
-  if (esp_now_init() == ESP_OK) {
-    Serial.println("ESPNow Init Success");
-  }
-  //Se houve erro na inicialização
-  else {
-    Serial.println("ESPNow Init Failed");
-    ESP.restart();
-  }
-}
-
-//Função que recebe os valores a serem enviados e envia os dados
-void Now::Send(){
-    _data myData;
-    myData.time = millis();
-
-    uint8_t broadcast[] = {0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF};
-    esp_err_t result = esp_now_send(broadcast, (uint8_t*) &myData, sizeof(myData));
-    Serial.print("Send Status: ");
-    //Se o envio foi bem sucedido
-    if (result == ESP_OK) {
-        Serial.println("Success");
-    }
-    //Se aconteceu algum erro no envio
-    else {
-        Serial.println("Error");
-    }
-}
-
 Now::Now (
     uint8_t gpios[],
     uint8_t macSlaves[][6]
@@ -128,4 +71,61 @@ void Now::Slave () {
 
     //Registra o callback que nos informará quando o Master enviou algo
     esp_now_register_recv_cb(OnDataRecv);
+}
+
+void Now::InitESPNow() {
+  //Se a inicialização foi bem sucedida
+  if (esp_now_init() == ESP_OK) {
+    Serial.println("ESPNow Init Success");
+  }
+  //Se houve erro na inicialização
+  else {
+    Serial.println("ESPNow Init Failed");
+    ESP.restart();
+  }
+}
+
+//Função que recebe os valores a serem enviados e envia os dados
+void Now::Send(){
+    _data myData;
+    myData.time = millis();
+
+    uint8_t broadcast[] = {0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF};
+    esp_err_t result = esp_now_send(broadcast, (uint8_t*) &myData, sizeof(myData));
+    Serial.print("Send Status: ");
+    //Se o envio foi bem sucedido
+    if (result == ESP_OK) {
+        Serial.println("Success");
+    }
+    //Se aconteceu algum erro no envio
+    else {
+        Serial.println("Error");
+    }
+}
+
+// callback when data is sent from Master to Slave
+void Now::OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  char macStr[18];
+  snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+  Serial.print("Last Packet Sent to: "); Serial.println(macStr);
+  Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+//Função que recebe os dados e o tam da string data
+void Now::OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
+    char macStr[18];
+    _data myData;
+    //Copiamos o Mac Address origem para uma string
+    snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    //Mostramos o Mac Address que foi a origem da mensagem
+    Serial.print("Received from: "); 
+    Serial.println(macStr);
+    Serial.println("");
+    //Testando os dados
+    memcpy(&myData, incomingData, sizeof(myData));
+    Serial.print("Tempo:");
+    Serial.println(myData.time); 
+
 }
