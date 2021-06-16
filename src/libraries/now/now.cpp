@@ -5,7 +5,8 @@
 
 Now::Now (
     uint8_t gpios[],
-    uint8_t macSlaves[][6]
+    uint8_t macSlaves[][6],
+    int id
 )
 {
     
@@ -23,6 +24,8 @@ Now::Now (
             _macSlaves[i][j] = macSlaves[i][j];
         }
     }
+
+    const int myData.id = id;
 }
 
 void Now::Master () {
@@ -75,22 +78,21 @@ void Now::Slave () {
 
 //Verifica a inicializacao da ESP
 void Now::InitESPNow() {
-  //Se a inicialização foi bem sucedida
-  if (esp_now_init() == ESP_OK) {
-    Serial.println("ESPNow Init Success");
-  }
-  //Se houve erro na inicialização
-  else {
-    Serial.println("ESPNow Init Failed");
-    ESP.restart();
-  }
+    //Se a inicialização foi bem sucedida
+    if (esp_now_init() == ESP_OK) {
+        Serial.println("ESPNow Init Success");
+    }
+    //Se houve erro na inicialização
+    else {
+        Serial.println("ESPNow Init Failed");
+        ESP.restart();
+    }
 }
 
 //Função que recebe os valores a serem enviados e envia os dados
 void Now::Send(){
 
     //Exemplo de passagem de dados
-    _data myData;
     myData.time = millis();
 
     //Envio de dados para todas esps (default)
@@ -109,31 +111,29 @@ void Now::Send(){
 
 // Callback do envio da master para slave
 void Now::OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  char macStr[18];
-  snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.print("Last Packet Sent to: "); Serial.println(macStr);
-  Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+    char macStr[18];
+    snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    Serial.print("Last Packet Sent to: "); Serial.println(macStr);
+    Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
 //Função que recebe os dados e o tam da string data
 void Now::OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
     char macStr[18];
-    
-    //Struct que recebere os dados enviados pela Master
-    _data myData;
+
 
     //Copiamos o Mac Address origem para uma string
     snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-    
+
     //Mostramos o Mac Address que foi a origem da mensagem
     Serial.print("Received from: "); 
     Serial.println(macStr);
     Serial.println("");
-    
+
     //Testando os dados
-    memcpy(&myData, incomingData, sizeof(myData));
+    memcpy(&otherData, incomingData, sizeof(otherData));
     Serial.print("Tempo:");
-    Serial.println(myData.time); 
+    Serial.println(myData.time);
 }

@@ -13,7 +13,7 @@ class Utils {
       int m1, int m2, int m3, int m4, 
       int e1, int e2,
       char ir1, char ir2, char ir3, char ir4, char ir5);
-    void followLine (int speed);
+      void followLine (int speed);
 };
 
 #endif
