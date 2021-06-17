@@ -25,7 +25,7 @@ Now::Now (
         }
     }
 
-    const int myData.id = id;
+    myData.id = id;
 }
 
 void Now::Master () {
@@ -110,7 +110,7 @@ void Now::Send(){
 }
 
 // Callback do envio da master para slave
-void Now::OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
     char macStr[18];
     snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
@@ -119,7 +119,9 @@ void Now::OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
 
 //Função que recebe os dados e o tam da string data
-void Now::OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
+void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
+
+
     char macStr[18];
 
 
@@ -133,7 +135,6 @@ void Now::OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int d
     Serial.println("");
 
     //Testando os dados
-    memcpy(&otherData, incomingData, sizeof(otherData));
-    Serial.print("Tempo:");
-    Serial.println(myData.time);
+    sdata_t myData;
+    memcpy(&myData, incomingData, sizeof(myData));
 }
