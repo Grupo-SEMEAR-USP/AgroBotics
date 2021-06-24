@@ -3,11 +3,14 @@
 #include "now.h"
 #define CHANNEL 5
 
+sdata_t Now::myData;
+sdata_t Now::otherData;
+
+
 Now::Now (
     uint8_t gpios[],
     uint8_t macSlaves[][6],
-    int id
-)
+    int id)
 {
     
     //Passando o array gpios
@@ -25,12 +28,11 @@ Now::Now (
         }
     }
 
-    myData.id = id;
+    Now::myData.id = id;
 }
 
-void Now::Master () {
-
-    //Colocamos o ESP em modo station
+void Now::Init (){
+   //Colocamos o ESP em modo station
     WiFi.mode(WIFI_STA);
 
     //Mostramos no Monitor Serial o Mac Address deste ESP quando em modo station
@@ -38,7 +40,9 @@ void Now::Master () {
     Serial.println(WiFi.macAddress());
 
     InitESPNow();
+}
 
+void Now::Master () {
     int slavesCount = sizeof(_macSlaves)/6/sizeof(uint8_t);
 
     //Para cada slave
@@ -62,16 +66,6 @@ void Now::Master () {
 }
 
 void Now::Slave () {
-
-    //Colocamos o ESP em modo station
-    WiFi.mode(WIFI_STA);
-    //Mostramos no Monitor Serial o Mac Address deste ESP quando em modo station
-    Serial.print("Mac Address in Station: "); 
-    Serial.println(WiFi.macAddress());
-
-    //Chama a função que inicializa o ESPNow
-    InitESPNow();
-
     //Registra o callback que nos informará quando o Master enviou algo
     esp_now_register_recv_cb(OnDataRecv);
 }
@@ -92,12 +86,9 @@ void Now::InitESPNow() {
 //Função que recebe os valores a serem enviados e envia os dados
 void Now::Send(){
 
-    //Exemplo de passagem de dados
-    myData.time = millis();
-
     //Envio de dados para todas esps (default)
     uint8_t broadcast[] = {0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF};
-    esp_err_t result = esp_now_send(broadcast, (uint8_t*) &myData, sizeof(myData));
+    esp_err_t result = esp_now_send(broadcast, (uint8_t*) &(Now::myData), sizeof(Now::myData));
     Serial.print("Send Status: ");
     //Se o envio foi bem sucedido
     if (result == ESP_OK) {
@@ -120,10 +111,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 //Função que recebe os dados e o tam da string data
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_len) {
-
-
     char macStr[18];
-
 
     //Copiamos o Mac Address origem para uma string
     snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
@@ -135,6 +123,5 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int data_l
     Serial.println("");
 
     //Testando os dados
-    sdata_t myData;
-    memcpy(&myData, incomingData, sizeof(myData));
+    memcpy(&(Now::otherData), incomingData, sizeof(Now::otherData));
 }

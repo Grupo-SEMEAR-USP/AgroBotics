@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "utils.h"
 #include "now.h" 
 //TESTE DA BIBLIOTECA UTILS
@@ -26,30 +28,30 @@ uint8_t macSlaves[][6] = {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
 const int id = 2;
 
 //Setup dos pinos
-    Utils robot (
-        motorRightTop, motorRightBottom, motorLeftTop, motorLeftBottom,
-        pwm0, pwm1,
-        sensor1, sensor2, sensor3, sensor4, sensor5);
-    Now comunication (
-        gpios, macSlaves, id
-    );
+Utils robot (
+    motorRightTop, motorRightBottom, motorLeftTop, motorLeftBottom,
+    pwm0, pwm1,
+    sensor1, sensor2, sensor3, sensor4, sensor5);
+Now comunication (
+    gpios, macSlaves, id);
+
+int status = 0;
 
 void setup() {
     robot.followLine(0);
-
+    
     //Declarando estados inciais do trator
     if (id == 2){
-        int status = 1;
+        status = 1;
     }
     else if (id == 3){
-        int status = -1;
+        status = -1;
     }
-    comunication.myData.status = 1;
-    comunication.myData.position = false;
-    comunication.myData.ready = false;
-}
+    
+};
 
 void loop() {
+    
     //Inicia o robo
     //Trocar 1 pelo microstart
     while (1) {
@@ -75,10 +77,10 @@ void loop() {
             }
 
             else {
-                /*
-                O While tem q ser substituido por um if Colocamos seja utilizado
-                o modelo de passagem de dados do que esta sendo feito pela colheitadeira
-                */
+
+                //O While tem q ser substituido por um if Colocamos seja utilizado
+                //o modelo de passagem de dados do que esta sendo feito pela colheitadeira
+                
                 while (time <= 500){
                     //robot.followRobot()
                     time = millis() - myTime;
@@ -89,4 +91,4 @@ void loop() {
             }
         }
     }
-}
+};
