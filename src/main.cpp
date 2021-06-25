@@ -2,9 +2,8 @@
 
 #include "utils.h"
 #include "now.h" 
-//TESTE DA BIBLIOTECA UTILS
 
-//TESTE DA BIBLIOTECA NOW
+#define TIME 5000
 
 //Definição dos canais
 const int motorRightTop = 1;
@@ -38,7 +37,7 @@ Now comunication (
 int status = 0;
 
 void setup() {
-    robot.followLine(0);
+    robot.moveRobot(0, 0);
     
     //Declarando estados inciais do trator
     if (id == 2){
@@ -58,31 +57,38 @@ void loop() {
 
         float myTime = millis();
         float time = 0;
+        int moveType, speed = 255;
         
+        comunication.Init(); 
         comunication.Slave();
         comunication.Master();
-
+        
         if (comunication.myData.status == status && comunication.otherData.status == 1){
             
             if (comunication.myData.position == false) {
                 //Chegar a colheitadeira
-                robot.followLine (200);
-                delay(comunication.myData.time);
+                while(time <= comunication.otherData.time){
+                    moveType = robot.followLine();
+                    robot.moveRobot(moveType, speed);
+
+                    time = millis() - myTime;
+                }
 
                 //Posicionar o trator
 
-                comunication.myData.ready = true;
                 //Mudar o estado do robo
+                comunication.myData.ready = true;
                 comunication.myData.position = true;
             }
 
             else {
-
-                //O While tem q ser substituido por um if Colocamos seja utilizado
-                //o modelo de passagem de dados do que esta sendo feito pela colheitadeira
-                
-                while (time <= 500){
-                    //robot.followRobot()
+                while (time <= TIME){
+                    //Recebendo o movimento que a colheitadeira está fazendo
+                    comunication.Slave();
+                    moveType = comunication.otherData.moveType;
+                    robot.moveRobot(moveType, speed);
+                    //Acrescentar forma de controlar a contagem de curvas
+                    
                     time = millis() - myTime;
                 }
                 //robot.returnBase();

@@ -6,13 +6,14 @@
 #include <esp_now.h>
 #include <WiFi.h>
 
-//FuncoesStruct que definira todos os dados que serem enviados e recebidos
+//Struct que definira todos os dados que serem enviados e recebidos
         typedef struct Data {
-            int id = 0;
-            double time = 0;
-            int status = 0; //Ira percorrer ou esperar
-            bool position = false; //Esta posicionado ou nao
-            bool ready = false; //Posicionamento do robo na colheitadeira
+            int id = 0;             //Id do robo
+            int moveType = 0;       //Tipo de movimento que o robo ira fazer
+            double time = 0;        //Tempo total de movimento
+            int status = 0;         //Ira percorrer ou esperar
+            bool position = false;  //Esta posicionado ou nao
+            bool ready = false;     //Posicionamento do robo na colheitadeira
         } sdata_t;
     
 class Now {

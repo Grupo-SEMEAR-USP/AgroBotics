@@ -6,6 +6,16 @@
 sdata_t Now::myData;
 sdata_t Now::otherData;
 
+void Now::Init (){
+   //Colocamos o ESP em modo station
+    WiFi.mode(WIFI_STA);
+
+    //Mostramos no Monitor Serial o Mac Address deste ESP quando em modo station
+    Serial.print("Mac Address in Station: "); 
+    Serial.println(WiFi.macAddress());
+
+    InitESPNow();
+}
 
 Now::Now (
     uint8_t gpios[],
@@ -29,17 +39,6 @@ Now::Now (
     }
 
     Now::myData.id = id;
-}
-
-void Now::Init (){
-   //Colocamos o ESP em modo station
-    WiFi.mode(WIFI_STA);
-
-    //Mostramos no Monitor Serial o Mac Address deste ESP quando em modo station
-    Serial.print("Mac Address in Station: "); 
-    Serial.println(WiFi.macAddress());
-
-    InitESPNow();
 }
 
 void Now::Master () {
