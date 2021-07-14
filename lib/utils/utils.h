@@ -16,9 +16,9 @@ class Utils {
       int e1, int e2,
       char ir1, char ir2, char ir3, char ir4, char ir5);
       
-      int followLine ();
-      void moveRobot (int moveType, int speed);
-      void returnBase ();
+    int followLine ();
+    void moveRobot (int moveType, int speed);
+    void returnBase ();
 };
 
 #endif
