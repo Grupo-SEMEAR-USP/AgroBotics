@@ -18,6 +18,11 @@ const int sensor3 = 7;
 const int sensor4 = 8;
 const int sensor5 = 9;
 
+#define SHUT_1 5
+#define SHUT_2 6
+#define SHUT_3 7
+#define SHUT_4 8
+
 const int pwm0 = 10;
 const int pwm1 = 11;
 
@@ -30,7 +35,8 @@ const int id = 2;
 Utils robot (
     motorRightTop, motorRightBottom, motorLeftTop, motorLeftBottom,
     pwm0, pwm1,
-    sensor1, sensor2, sensor3, sensor4, sensor5);
+    sensor1, sensor2, sensor3, sensor4, sensor5,
+    SHUT_1, SHUT_2, SHUT_3, SHUT_4);
 Now comunication (
     gpios, macSlaves, id);
 
