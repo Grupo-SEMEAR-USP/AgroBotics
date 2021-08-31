@@ -24,6 +24,13 @@ const int pwm1 = 11;
 
 /* Definição dos pinos da comunicação, endereços de Slaves e ID */
 
+#define SHUT_1 5
+#define SHUT_2 6
+#define SHUT_3 7
+#define SHUT_4 8
+
+//Passagem dos pinos a serem lidos e enviados e endereço das esps slaves
+
 uint8_t gpios[] = {23, 2};
 uint8_t macSlaves[][6] = {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
 const int id = 2;
