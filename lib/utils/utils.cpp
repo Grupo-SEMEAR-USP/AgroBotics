@@ -2,10 +2,21 @@
 
 #include "utils.h"
 
+// Instancia dois sensores
+VL53L0X sensor1;
+VL53L0X sensor2;
+VL53L0X sensor3;
+VL53L0X sensor4;
+
+#define s2_NewAdress 42
+#define s3_NewAdress 43
+#define s4_NewAdress 44
+
 Utils::Utils (
     int m1, int m2, int m3, int m4, 
     int e1, int e2,
-    char ir1, char ir2, char ir3, char ir4, char ir5
+    char ir1, char ir2, char ir3, char ir4, char ir5,
+    int shut_1, int shut_2, int shut_3, int shut_4
 ) 
 {
    
@@ -26,6 +37,12 @@ Utils::Utils (
     _ir4 = ir4;
     _ir5 = ir5;
 
+    //Sensores de distância
+    _shut_1 = shut_1;
+    _shut_2 = shut_2;
+    _shut_3 = shut_3;
+    _shut_4 = shut_4;
+
     //Right side
     pinMode(_m1, OUTPUT);
     pinMode(_m2, OUTPUT);
@@ -36,12 +53,18 @@ Utils::Utils (
     pinMode(_m4, OUTPUT);
     pinMode(_e2, OUTPUT);
 
-    //Sensors
+    //Sensors line
     pinMode(_ir1, INPUT);
     pinMode(_ir2, INPUT);
     pinMode(_ir3, INPUT);
     pinMode(_ir4, INPUT);
     pinMode(_ir5, INPUT);
+
+    //Sensors dist
+    pinMode(_shut_1, OUTPUT);
+    pinMode(_shut_2, OUTPUT);
+    pinMode(_shut_3, OUTPUT);
+    pinMode(_shut_4, OUTPUT);
 
     //AttachPin
     ledcAttachPin(_e1, 0);
@@ -193,5 +216,79 @@ void Utils::moveRobot(int moveType, int speed){
             digitalWrite(_m3, LOW);
             digitalWrite(_m4, LOW);
     }
-        
+}
+
+void Utils::sensorInit () {
+    digitalWrite(_shut_1, LOW);
+    delay(2);
+    digitalWrite(_shut_3, LOW);
+    delay(2);
+    digitalWrite(_shut_4, LOW);
+    delay(2);
+
+    // Define o novo endereço de cada sensor
+    // Define o sensor 2 como entrada para fazer o pino SHUT_2 ficar em nível alto
+    pinMode(_shut_2, INPUT);
+    delay(10); //For power-up procedure t-boot max 1.2ms
+    sensor2.setAddress(s2_NewAdress);
+
+    pinMode(_shut_3, INPUT);
+    delay(10); //For power-up procedure t-boot max 1.2ms
+    sensor3.setAddress(s3_NewAdress);
+
+    pinMode(_shut_4, INPUT);
+    delay(10); //For power-up procedure t-boot max 1.2ms
+    sensor4.setAddress(s4_NewAdress);
+
+    // Para adicionar novos sensores
+    //pinMode(SHUT_X, INPUT);
+    //delay(10); //For power-up procedure t-boot max 1.2ms
+    //SensorX.setAddress(sx_NewAdress);
+
+    // Religa o sensor 1 definindo ele como entrada
+    pinMode(_shut_1, INPUT);
+    delay(10); //For power-up procedure t-boot max 1.2ms
+    //sensor1.setAddress(41);
+
+    // Inicializa sensores
+    sensor1.init();
+    sensor2.init();
+    sensor3.init();
+    sensor4.init();
+    //sensorX.init();
+
+    sensor1.setTimeout(500);
+    sensor2.setTimeout(500);
+    sensor3.setTimeout(500);
+    sensor4.setTimeout(500);
+    //sensorX.setTimeout(500);
+
+    // Inicializa modo contínuo
+    // Para timed mode, colocar intervalo de medidas na entrada
+    sensor1.startContinuous();
+    sensor2.startContinuous();
+    sensor3.startContinuous();
+    sensor4.startContinuous();
+
+    delay(200);
+
+    Serial.println("");
+    Serial.println("Sensores ativados\n\n");
+}
+
+void Utils::getDist (int typeSensor) {
+    switch (typeSensor) {
+        case 1:
+            _dist1 = sensor1.readRangeContinuousMillimeters();
+            if (sensor1.timeoutOccurred()) {Serial.print("TIMEOUT Sensor");}
+        case 2:
+            _dist2 = sensor2.readRangeContinuousMillimeters();
+            if (sensor2.timeoutOccurred()) {Serial.print("TIMEOUT Sensor");}
+        case 3:
+            _dist3 = sensor3.readRangeContinuousMillimeters();
+            if (sensor3.timeoutOccurred()) {Serial.print("TIMEOUT Sensor");}
+        case 4:
+            _dist4 = sensor4.readRangeContinuousMillimeters();
+            if (sensor4.timeoutOccurred()) {Serial.print("TIMEOUT Sensor");}
+    }
 }
