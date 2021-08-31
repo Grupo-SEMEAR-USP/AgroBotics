@@ -279,7 +279,7 @@ void Utils::sensorInit () {
 void Utils::getDist (int typeSensor) {
     switch (typeSensor) {
         case 1:
-            _dist2 = sensor1.readRangeContinuousMillimeters();
+            _dist1 = sensor1.readRangeContinuousMillimeters();
             if (sensor1.timeoutOccurred()) {Serial.print("TIMEOUT Sensor");}
         case 2:
             _dist2 = sensor2.readRangeContinuousMillimeters();
