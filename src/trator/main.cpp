@@ -5,7 +5,8 @@
 
 #define TIME 5000
 
-//Definição dos canais
+/* Definição dos pinos */
+
 const int motorRightTop = 1;
 const int motorRightBottom = 2;
 const int motorLeftTop = 3;
@@ -18,31 +19,37 @@ const int sensor3 = 7;
 const int sensor4 = 8;
 const int sensor5 = 9;
 
+const int pwm0 = 10;
+const int pwm1 = 11;
+
+/* Definição dos pinos da comunicação, endereços de Slaves e ID */
+
 #define SHUT_1 5
 #define SHUT_2 6
 #define SHUT_3 7
 #define SHUT_4 8
 
-const int pwm0 = 10;
-const int pwm1 = 11;
-
 //Passagem dos pinos a serem lidos e enviados e endereço das esps slaves
+
 uint8_t gpios[] = {23, 2};
 uint8_t macSlaves[][6] = {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
 const int id = 2;
 
-//Setup dos pinos
+/* Criando objetos */
+
 Utils robot (
     motorRightTop, motorRightBottom, motorLeftTop, motorLeftBottom,
     pwm0, pwm1,
-    sensor1, sensor2, sensor3, sensor4, sensor5,
-    SHUT_1, SHUT_2, SHUT_3, SHUT_4);
+    sensor1, sensor2, sensor3, sensor4, sensor5);
 Now comunication (
     gpios, macSlaves, id);
+
+/* Variáveis default */
 
 int status = 0;
 
 void setup() {
+    //Desligar os motores do robô
     robot.moveRobot(0, 0);
     
     //Declarando estados inciais do trator
@@ -56,9 +63,8 @@ void setup() {
 };
 
 void loop() {
-    
-    //Inicia o robo
-    //Trocar 1 pelo microstart
+
+    //Inicia o robô (Trocar 1 pelo microstart)
     while (1) {
 
         float myTime = millis();
