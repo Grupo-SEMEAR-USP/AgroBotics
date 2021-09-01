@@ -3,31 +3,29 @@
 #include "utils.h"
 #include "now.h" 
 
-#define TIME 5000
+#define TIME 5000 //Tempo para revezamento
 
 /* Definição dos pinos */
 
-const int motorRightTop = 1;
-const int motorRightBottom = 2;
-const int motorLeftTop = 3;
+#define MotorRightTop A0
+#define MotorRightBottom A5
+#define MotorLeftTop A7
+#define MotorLeftBottom A3
 
-const int motorLeftBottom = 4;
+#define SENSOR1 1
+#define SENSOR2 2
+#define SENSOR3 3
+#define SENSOR4 4
+#define SENSOR5 5
 
-const int sensor1 = 5;
-const int sensor2 = 6;
-const int sensor3 = 7;
-const int sensor4 = 8;
-const int sensor5 = 9;
+#define SHUT_1 6
+#define SHUT_2 7
+#define SHUT_3 8
+#define SHUT_4 9
 
-const int pwm0 = 10;
-const int pwm1 = 11;
+#define PWM0 10
+#define PWM1 11
 
-/* Definição dos pinos da comunicação, endereços de Slaves e ID */
-
-#define SHUT_1 5
-#define SHUT_2 6
-#define SHUT_3 7
-#define SHUT_4 8
 
 //Passagem dos pinos a serem lidos e enviados e endereço das esps slaves
 
@@ -38,9 +36,10 @@ const int id = 2;
 /* Criando objetos */
 
 Utils robot (
-    motorRightTop, motorRightBottom, motorLeftTop, motorLeftBottom,
-    pwm0, pwm1,
-    sensor1, sensor2, sensor3, sensor4, sensor5);
+    MotorRightTop, MotorRightBottom, MotorLeftTop, MotorLeftBottom,
+    PWM0, PWM1,
+    SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5,
+    SHUT_1, SHUT_2, SHUT_3, SHUT_4);
 Now comunication (
     gpios, macSlaves, id);
 
@@ -59,6 +58,7 @@ void setup() {
     else if (id == 3){
         status = -1;
     }
+    comunication.Init();
     
 };
 
@@ -70,8 +70,7 @@ void loop() {
         float myTime = millis();
         float time = 0;
         int moveType, speed = 255;
-        
-        comunication.Init(); 
+    
         comunication.Slave();
         comunication.Master();
         

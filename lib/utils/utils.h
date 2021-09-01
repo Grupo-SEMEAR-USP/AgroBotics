@@ -9,8 +9,8 @@
 class Utils {
   protected:
     int _m1, _m2, _m3, _m4;
-    double _e1, _e2;
-    char _ir1, _ir2, _ir3, _ir4, _ir5;
+    int _e1, _e2;
+    int _ir1, _ir2, _ir3, _ir4, _ir5;
     int _shut_1, _shut_2, _shut_3, _shut_4;
     int countCurves;
     float _dist1, _dist2, _dist3, _dist4;
@@ -19,7 +19,7 @@ class Utils {
     Utils(
       int m1, int m2, int m3, int m4, 
       int e1, int e2,
-      char ir1, char ir2, char ir3, char ir4, char ir5,
+      int ir1, int ir2, int ir3, int ir4, int ir5,
       int shut_1, int shut_2, int shut_3, int shut_4);
       
     void sensorInit ();

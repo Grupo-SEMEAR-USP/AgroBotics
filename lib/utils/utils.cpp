@@ -15,7 +15,7 @@ VL53L0X sensor4;
 Utils::Utils (
     int m1, int m2, int m3, int m4, 
     int e1, int e2,
-    char ir1, char ir2, char ir3, char ir4, char ir5,
+    int ir1, int ir2, int ir3, int ir4, int ir5,
     int shut_1, int shut_2, int shut_3, int shut_4
 ) 
 {
@@ -240,11 +240,6 @@ void Utils::sensorInit () {
     delay(10); //For power-up procedure t-boot max 1.2ms
     sensor4.setAddress(s4_NewAdress);
 
-    // Para adicionar novos sensores
-    //pinMode(SHUT_X, INPUT);
-    //delay(10); //For power-up procedure t-boot max 1.2ms
-    //SensorX.setAddress(sx_NewAdress);
-
     // Religa o sensor 1 definindo ele como entrada
     pinMode(_shut_1, INPUT);
     delay(10); //For power-up procedure t-boot max 1.2ms
@@ -255,13 +250,11 @@ void Utils::sensorInit () {
     sensor2.init();
     sensor3.init();
     sensor4.init();
-    //sensorX.init();
 
     sensor1.setTimeout(500);
     sensor2.setTimeout(500);
     sensor3.setTimeout(500);
     sensor4.setTimeout(500);
-    //sensorX.setTimeout(500);
 
     // Inicializa modo contínuo
     // Para timed mode, colocar intervalo de medidas na entrada
