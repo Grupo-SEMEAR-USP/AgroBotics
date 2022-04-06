@@ -30,7 +30,7 @@
 //Passagem dos pinos a serem lidos e enviados e endereço das esps slaves
 
 uint8_t gpios[] = {23, 2};
-uint8_t macSlaves[][6] = {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
+uint8_t macSlave[6] = {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
 const int id = 2;
 
 /* Criando objetos */
@@ -41,7 +41,7 @@ Utils robot (
     SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5,
     SHUT_1, SHUT_2, SHUT_3, SHUT_4);
 Now comunication (
-    gpios, macSlaves, id);
+    gpios, macSlave, id);
 
 /* Variáveis default */
 

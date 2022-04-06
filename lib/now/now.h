@@ -20,7 +20,7 @@ typedef struct Data {
 class Now {
     protected:
         uint8_t _gpios[];           //Pinos que serão utilizados na comunicação
-        uint8_t _macSlaves[][6];    //Endereços das ESPs que receberam os dados da Master
+        uint8_t _macSlave[6];    //Endereços das ESPs que receberam os dados da Master
     public:
         Now (uint8_t gpios[], uint8_t macSlaves[][6], int id);
         

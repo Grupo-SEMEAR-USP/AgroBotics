@@ -18,7 +18,7 @@ sdata_t Now::otherData;
 */
 Now::Now (
     uint8_t gpios[],
-    uint8_t macSlaves[][6],
+    uint8_t macSlave[6],
     int id)
 {
     
@@ -30,11 +30,8 @@ Now::Now (
     
 
     //Passando a matriz macSlaves
-    len =  sizeof macSlaves / sizeof macSlaves[0];  
-    for (int i=0; i<len; i++){
-        for (int j=0; j<6; j++){
-            _macSlaves[i][j] = macSlaves[i][j];
-        }
+    for (int i=0; i<6; j++){
+        _macSlave[i] = macSlave[i];
     }
     
     //Passando o ID
@@ -51,6 +48,17 @@ void Now::Init (){
     Serial.println(WiFi.macAddress());
 
     InitESPNow();
+
+    //Criamos uma variável que irá guardar as informações do slave
+    esp_now_peer_info_t slave;
+    //Informamos o canal
+    slave.channel = CHANNEL;
+    //0 para não usar criptografia
+    slave.encrypt = 0;
+    //Copia o endereço do array para a estrutura
+    memcpy(slave.peer_addr, _macSlave, sizeof(_macSlave));
+    //Adiciona o slave
+    esp_now_add_peer(&slave);
 }
 
 /* Verifica a inicialização da ESP */
@@ -68,22 +76,6 @@ void Now::InitESPNow() {
 
 /* Envio de dados para os Slaves */
 void Now::Master () {
-    int slavesCount = sizeof(_macSlaves)/6/sizeof(uint8_t);
-
-    //Para cada slave
-    for(int i=0; i<slavesCount; i++){
-        //Criamos uma variável que irá guardar as informações do slave
-        esp_now_peer_info_t slave;
-        //Informamos o canal
-        slave.channel = CHANNEL;
-        //0 para não usar criptografia
-        slave.encrypt = 0;
-        //Copia o endereço do array para a estrutura
-        memcpy(slave.peer_addr, _macSlaves[i], sizeof(_macSlaves[i]));
-        //Adiciona o slave
-        esp_now_add_peer(&slave);
-    }
-
     //Registra o callback que nos informará sobre o status do envio
     esp_now_register_send_cb(OnDataSent);
 
@@ -99,9 +91,7 @@ void Now::Slave () {
 /* Faz o envio de fato para os Slaves */
 void Now::Send(){
 
-    //Envio de dados para todas ESPs
-    uint8_t broadcast[] = {0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF};
-    esp_err_t result = esp_now_send(broadcast, (uint8_t*) &(Now::myData), sizeof(Now::myData));
+    esp_err_t result = esp_now_send(_macSlave, (uint8_t*) &(Now::myData), sizeof(Now::myData));
     Serial.print("Send status: ");
     //Se o envio foi bem sucedido
     if (result == ESP_OK) {
