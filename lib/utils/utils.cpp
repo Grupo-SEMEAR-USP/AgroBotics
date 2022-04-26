@@ -13,22 +13,27 @@ VL53L0X sensor4;
 #define s4_NewAdress 44
 
 Utils::Utils (
-    int m1, int m2, int m3, int m4, 
-    int e1, int e2,
-    int ir1, int ir2, int ir3, int ir4, int ir5,
-    int shut_1, int shut_2, int shut_3, int shut_4
+    int m1_1, int m1_2 ,int m2_1, int m2_2,int m3_1, int m3_2, int m4_1, int m4_2,
+    int e1, int e2, int e3, int e4,
+    int ir1, int ir2, int ir3, int ir4, int ir5
 ) 
 {
    
     //Motores
-    _m1 = m1;
-    _m2 = m2;
-    _m3 = m3;
-    _m4 = m4;
+    _m1_1 = m1_1;
+    _m1_2 = m1_2;
+    _m2_1 = m2_1;
+    _m2_2 = m2_2;
+    _m3_1 = m3_1;
+    _m3_2 = m3_2;
+    _m4_1 = m4_1;
+    _m4_2 = m4_2;
 
     //Ponte h
     _e1 = e1;
     _e2 = e2;
+    _e3 = e3;
+    _e4 = e4;
 
     //Sensor de linha (IR5)
     _ir1 = ir1;
@@ -38,20 +43,28 @@ Utils::Utils (
     _ir5 = ir5;
 
     //Sensores de distância
+    /*
     _shut_1 = shut_1;
     _shut_2 = shut_2;
     _shut_3 = shut_3;
     _shut_4 = shut_4;
+*/
 
     //Right side
-    pinMode(_m1, OUTPUT);
-    pinMode(_m2, OUTPUT);
+    pinMode(_m1_1, OUTPUT);
+    pinMode(_m1_2, OUTPUT);
+    pinMode(_m2_1, OUTPUT);
+    pinMode(_m2_2, OUTPUT);
     pinMode(_e1, OUTPUT);
+    pinMode(_e2, OUTPUT);
 
     //Left side
-    pinMode(_m3, OUTPUT);
-    pinMode(_m4, OUTPUT);
-    pinMode(_e2, OUTPUT);
+    pinMode(_m3_1, OUTPUT);
+    pinMode(_m3_2, OUTPUT);
+    pinMode(_m4_1, OUTPUT);
+    pinMode(_m4_2, OUTPUT);
+    pinMode(_e3, OUTPUT);
+    pinMode(_e4, OUTPUT);
 
     //Sensors line
     pinMode(_ir1, INPUT);
@@ -61,10 +74,12 @@ Utils::Utils (
     pinMode(_ir5, INPUT);
 
     //Sensors dist
+    /*
     pinMode(_shut_1, OUTPUT);
     pinMode(_shut_2, OUTPUT);
     pinMode(_shut_3, OUTPUT);
     pinMode(_shut_4, OUTPUT);
+*/
 
     //AttachPin
     ledcAttachPin(_e1, 0);
@@ -73,8 +88,16 @@ Utils::Utils (
     //Setup
     const int freq = 5000;
     const int resolution = 8;
+
     ledcSetup(0, freq, resolution);
     ledcSetup(1, freq, resolution);
+    ledcSetup(2, freq, resolution);
+    ledcSetup(3, freq, resolution);
+
+    ledcAttachPin(_e1, 0);
+    ledcAttachPin(_e2, 1);
+    ledcAttachPin(_e3, 2);
+    ledcAttachPin(_e4, 3);
 }
 
 int Utils::followLine () {
@@ -134,87 +157,167 @@ void Utils::moveRobot(int moveType, int speed){
     switch (moveType){
         case 1:
             //going forward with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, HIGH);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, HIGH);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, LOW);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, LOW);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, LOW);
+            digitalWrite(_m4_1, LOW);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 2:
             //going right with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, HIGH);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, LOW);
+            digitalWrite(_m4_1, LOW);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 3:
             //going right with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, HIGH);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, HIGH);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, LOW);
+            digitalWrite(_m4_1, LOW);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 4:
             //going left with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, HIGH);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, LOW);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, LOW);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 5:
             //going left with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, HIGH);
-            digitalWrite(_m3, HIGH);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, LOW);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, LOW);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 6:
             //going left with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, HIGH);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, LOW);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, LOW);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 7:
             //going right with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, HIGH);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, LOW);
+            digitalWrite(_m4_1, LOW);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 8:
             //going right with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, HIGH);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, LOW);
+            digitalWrite(_m4_1, LOW);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 9:
             //going left with full speed 
-            ledcWrite(_e1, speed); //you can adjust the speed of the motors from 0-255
-            ledcWrite(_e2, speed); //you can adjust the speed of the motors from 0-255
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, HIGH);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, speed); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, speed); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, LOW);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, LOW);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
+            break;
         case 10:
              //stop
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, 0); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
+            break;
         default:
-            digitalWrite(_m1, LOW);
-            digitalWrite(_m2, LOW);
-            digitalWrite(_m3, LOW);
-            digitalWrite(_m4, LOW);
+            ledcWrite(0, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(1, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(2, 0); //you can adjust the speed of the motors from 0-255
+            ledcWrite(3, 0); //you can adjust the speed of the motors from 0-255
+            digitalWrite(_m1_1, HIGH);
+            digitalWrite(_m1_2, HIGH);
+            digitalWrite(_m2_1, HIGH);
+            digitalWrite(_m2_2, HIGH);
+            digitalWrite(_m3_1, HIGH);
+            digitalWrite(_m3_2, HIGH);
+            digitalWrite(_m4_1, HIGH);
+            digitalWrite(_m4_2, HIGH);
     }
 }
 
